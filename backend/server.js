@@ -8,10 +8,15 @@ const hackathonRoutes = require("./routes/hackathonRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const trendingTopicRoutes = require("./routes/trendingTopicRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
+const taskRoutes = require("./routes/taskRoutes");
+
+const seedDefaultAdmin = require("./seedAdmin");
 
 dotenv.config();
 
-connectDB();
+connectDB().then(() => {
+  seedDefaultAdmin();
+});
 
 const app = express();
 
@@ -23,6 +28,7 @@ app.use("/api/hackathons", hackathonRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/topics", trendingTopicRoutes);
 app.use("/api/announcements", announcementRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
   res.send("HackMate API Running...");

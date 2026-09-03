@@ -4,8 +4,10 @@ const router = express.Router();
 const User = require("../models/User");
 const Team = require("../models/Team");
 const Hackathon = require("../models/Hackathon");
+const { requireAdmin } = require("../middleware/authMiddleware");
 
-router.get("/stats", async (req, res) => {
+// Apply requireAdmin to all admin endpoints
+router.get("/stats", requireAdmin, async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
     const totalTeams = await Team.countDocuments();

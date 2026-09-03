@@ -37,15 +37,15 @@ function Sidebar() {
       path: "/profile",
       icon: <FiUser size={20} />,
     },
-    ...(user?.email === "suganya@gmail.com"
-    ? [
-        {
-          name: "Admin Dashboard",
-          path: "/admin-dashboard",
-          icon: <FiShield size={20} />,
-        },
-      ]
-    : []),
+    ...(user?.role === "admin"
+      ? [
+          {
+            name: "Admin Dashboard",
+            path: "/admin-dashboard",
+            icon: <FiShield size={20} />,
+          },
+        ]
+      : []),
 
   ];
 
