@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+<<<<<<< HEAD
+=======
+import API_URL from "../api";
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 import DashboardLayout from "../layouts/DashboardLayout";
 
 function Home() {
@@ -15,7 +19,11 @@ function Home() {
   const fetchTopics = async () => {
     try {
       const res = await axios.get(
+<<<<<<< HEAD
         "http://localhost:5000/api/topics"
+=======
+        `${API_URL}/api/topics`
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       );
 
     setTopics(res.data);
@@ -27,7 +35,11 @@ function Home() {
 const fetchAnnouncements = async () => {
   try {
     const res = await axios.get(
+<<<<<<< HEAD
       "http://localhost:5000/api/announcements"
+=======
+      `${API_URL}/api/announcements`
+>>>>>>> 90fb055 (Prepare frontend for deployment)
     );
 
     setAnnouncements(res.data);

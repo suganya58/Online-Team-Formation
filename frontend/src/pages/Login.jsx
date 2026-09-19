@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -50,10 +51,49 @@ function Login() {
       alert(error.response?.data?.message || "Login Failed. Please check your credentials.");
     } finally {
       setLoading(false);
+=======
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import API_URL from "../api";
+
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/api/users/login`,
+        {
+          email,
+          password,
+        }
+      );
+
+      alert(res.data.message);
+
+localStorage.setItem(
+  "user",
+  JSON.stringify(res.data.user)
+);
+
+alert("Stored: " + localStorage.getItem("user"));
+
+navigate("/home");
+console.log(res.data);
+
+    } catch (error) {
+      alert(
+        error.response?.data?.message || "Login Failed"
+      );
+>>>>>>> 90fb055 (Prepare frontend for deployment)
     }
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
       {/* Brand Header */}
       <div className="text-center mb-8">
@@ -183,6 +223,36 @@ function Login() {
             </p>
           </div>
         )}
+=======
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-96">
+        <h1 className="text-3xl font-bold text-center mb-6">
+          Hackathon Team Formation
+        </h1>
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border p-3 rounded-lg mb-4"
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full border p-3 rounded-lg mb-4"
+        />
+
+        <button
+          onClick={handleLogin}
+          className="w-full bg-blue-600 text-white p-3 rounded-lg"
+        >
+          Login
+        </button>
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       </div>
     </div>
   );

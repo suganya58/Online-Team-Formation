@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Team = require("../models/Team");
+<<<<<<< HEAD
 const User = require("../models/User");
 const { matchSkills } = require("../services/skillMatcher");
 
@@ -14,6 +15,13 @@ function isValidObjectId(id) {
 /* ===========================
    CREATE TEAM
 =========================== */
+=======
+const router = express.Router();
+
+ 
+   //CREATE TEAM
+
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 router.post("/create", async (req, res) => {
   try {
     const {
@@ -67,15 +75,30 @@ router.post("/create", async (req, res) => {
   }
 });
 
-/* ===========================
-   GET ALL TEAMS
-=========================== */
+
+  // GET ALL TEAMS
+
 router.get("/", async (req, res) => {
   try {
     const teams = await Team.find()
+<<<<<<< HEAD
       .populate("teamLeader", "fullName email college department github linkedin")
       .populate("members", "fullName email college department year skills github linkedin about")
       .populate("joinRequests.user", "fullName email college department year skills github linkedin about");
+=======
+      .populate(
+        "teamLeader",
+        "fullName email college department github linkedin skills"
+      )
+      .populate(
+        "members",
+        "fullName email college department github linkedin skills"
+      )
+      .populate(
+        "joinRequests.user",
+        "fullName email college department github linkedin skills year about"
+      );
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 
     res.status(200).json(teams);
   } catch (error) {
@@ -83,6 +106,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 /* ===========================
    GET AI TEAM RECOMMENDATIONS
 =========================== */
@@ -165,13 +189,29 @@ router.put("/edit/:id", async (req, res) => {
     if (!userId || !isValidObjectId(userId)) {
       return res.status(400).json({ message: "Valid User ID is required." });
     }
+=======
+
+   //JOIN TEAM REQUEST
+
+router.put("/join/:id", async (req, res) => {
+  try {
+    console.log("Request Body:", req.body);
+
+    const { userId, matchPercentage } = req.body;
+>>>>>>> 90fb055 (Prepare frontend for deployment)
+
+    console.log("User ID:", userId);
+    console.log("Match:", matchPercentage);
 
     const team = await Team.findById(req.params.id);
+
+    console.log("Team:", team);
 
     if (!team) {
       return res.status(404).json({ message: "Team not found" });
     }
 
+<<<<<<< HEAD
     const leaderId = (team.teamLeader?._id || team.teamLeader).toString();
     if (leaderId !== userId.toString()) {
       return res.status(403).json({ message: "Only the team leader can edit this team" });
@@ -183,6 +223,21 @@ router.put("/edit/:id", async (req, res) => {
     }
 
     if (newMaxMembers < team.members.length) {
+=======
+
+
+    if (team.teamLeader.toString() === userId) {
+  return res.status(400).json({
+    message: "You are already the Team Leader."
+  });
+}
+    // Already a member
+    if (
+      team.members.some(
+        (member) => member.toString() === userId
+      )
+    ) {
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       return res.status(400).json({
         message: `Maximum members cannot be less than current member count (${team.members.length})`,
       });
@@ -314,9 +369,9 @@ router.put("/join/:id", async (req, res) => {
   }
 });
 
-/* ===========================
-   APPROVE REQUEST
-=========================== */
+
+   //APPROVE REQUEST
+
 router.put("/approve/:id", async (req, res) => {
   try {
     if (!isValidObjectId(req.params.id)) {
@@ -353,6 +408,7 @@ router.put("/approve/:id", async (req, res) => {
       return res.status(400).json({ message: "Team has reached maximum capacity" });
     }
 
+<<<<<<< HEAD
     team.joinRequests = team.joinRequests.filter(
       (request) => (request.user?._id || request.user).toString() !== userId.toString()
     );
@@ -366,6 +422,30 @@ router.put("/approve/:id", async (req, res) => {
     if (team.members.length >= team.maxMembers) {
       team.status = "Closed";
     }
+=======
+    // Already a member
+    const alreadyMember = team.members.some(
+      (member) => member.toString() === userId
+    );
+
+    if (!alreadyMember) {
+      team.members.push(userId);
+    }
+
+    // Remove join request
+    team.joinRequests = team.joinRequests.filter((request) => {
+      const requestUserId = request.user._id
+        ? request.user._id.toString()
+        : request.user.toString();
+
+      return requestUserId !== userId;
+    });
+
+    // Update progress
+    team.progress = Math.round(
+      (team.members.length / team.maxMembers) * 100
+    );
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 
     await team.save();
 
@@ -375,13 +455,57 @@ router.put("/approve/:id", async (req, res) => {
     });
 
   } catch (error) {
+<<<<<<< HEAD
     res.status(500).json({ message: error.message });
+=======
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+>>>>>>> 90fb055 (Prepare frontend for deployment)
   }
 });
 
-/* ===========================
-   REJECT REQUEST
-=========================== */
+
+  // DELETE TEAM
+
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const team = await Team.findById(req.params.id);
+
+    if (!team) {
+      return res.status(404).json({
+        message: "Team not found",
+      });
+    }
+
+    // Only Team Leader can delete
+    if (team.teamLeader.toString() !== userId) {
+      return res.status(403).json({
+        message: "Only Team Leader can delete the team",
+      });
+    }
+
+    await Team.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      message: "Team deleted successfully",
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+// REJECT JOIN REQUEST
+
 router.put("/reject/:id", async (req, res) => {
   try {
     if (!isValidObjectId(req.params.id)) {
@@ -413,11 +537,12 @@ router.put("/reject/:id", async (req, res) => {
     await team.save();
 
     res.status(200).json({
-      message: "Request rejected successfully",
+      message: "Join request rejected successfully",
       team,
     });
 
   } catch (error) {
+<<<<<<< HEAD
     res.status(500).json({ message: error.message });
   }
 });
@@ -459,9 +584,80 @@ router.put("/transfer-leader/:id", async (req, res) => {
     res.status(200).json({
       message: "Team leader updated successfully",
       team,
+=======
+    console.log("Reject Request Error:", error);
+
+    res.status(500).json({
+      message: error.message,
+>>>>>>> 90fb055 (Prepare frontend for deployment)
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+
+   //EDIT TEAM
+
+router.put("/edit/:id", async (req, res) => {
+  try {
+    const {
+      userId,
+      teamName,
+      hackathonName,
+      description,
+      requiredSkills,
+      maxMembers,
+      status,
+    } = req.body;
+
+    const team = await Team.findById(req.params.id);
+
+    if (!team) {
+      return res.status(404).json({
+        message: "Team not found",
+      });
+    }
+
+    // Only the current Team Leader can edit the team
+    if (team.teamLeader.toString() !== userId) {
+      return res.status(403).json({
+        message: "Only Team Leader can edit this team",
+      });
+    }
+
+    // Maximum members cannot be lower than current member count
+    if (Number(maxMembers) < team.members.length) {
+      return res.status(400).json({
+        message: `Maximum members cannot be less than ${team.members.length}`,
+      });
+    }
+
+    // Update team details
+    team.teamName = teamName;
+    team.hackathonName = hackathonName;
+    team.description = description;
+    team.requiredSkills = requiredSkills;
+    team.maxMembers = Number(maxMembers);
+    team.status = status;
+
+    // Recalculate progress
+    team.progress = Math.round(
+      (team.members.length / team.maxMembers) * 100
+    );
+
+    await team.save();
+
+    res.status(200).json({
+      message: "Team updated successfully",
+      team,
+    });
+  } catch (error) {
+    console.log("Edit Team Error:", error);
+
+    res.status(500).json({
+      message: error.message,
+    });
   }
 });
 

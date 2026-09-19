@@ -1,11 +1,19 @@
 import { useState } from "react";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+=======
+import axios from "axios";
+import API_URL from "../api";
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 import DashboardLayout from "../layouts/DashboardLayout";
 
 
 function CreateTeam() {
+<<<<<<< HEAD
   const navigate = useNavigate();
+=======
+>>>>>>> 90fb055 (Prepare frontend for deployment)
   const [formData, setFormData] = useState({
     teamName: "",
     hackathon: "",
@@ -27,6 +35,7 @@ const handleSubmit = async (e) => {
 
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
+<<<<<<< HEAD
   if (!loggedInUser || !loggedInUser._id) {
     alert("Please login to create a team");
     return navigate("/");
@@ -40,19 +49,30 @@ const handleSubmit = async (e) => {
 
   try {
     await axios.post("http://localhost:5000/api/teams/create", {
+=======
+  try {
+    await axios.post(`${API_URL}/api/teams/create`, {
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       teamName: formData.teamName,
       hackathonName: formData.hackathon,
       teamLeader: loggedInUser._id,
       requiredSkills: formData.skills
         .split(",")
         .map((skill) => skill.trim()),
+<<<<<<< HEAD
       maxMembers: maxM,
+=======
+      maxMembers: Number(formData.maxMembers),
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       description: formData.projectIdea,
       status: formData.status,
     });
 
     alert("Team Created Successfully!");
+<<<<<<< HEAD
     navigate("/my-teams");
+=======
+>>>>>>> 90fb055 (Prepare frontend for deployment)
   } catch (error) {
     console.log(error.response?.data);
     alert(error.response?.data?.message || "Failed to create team");

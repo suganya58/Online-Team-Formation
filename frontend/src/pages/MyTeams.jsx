@@ -1,6 +1,10 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+<<<<<<< HEAD
+=======
+import API_URL from "../api";
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 import DashboardLayout from "../layouts/DashboardLayout";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -16,7 +20,11 @@ function MyTeams() {
 
   const fetchTeams = async () => {
     try {
+<<<<<<< HEAD
       const res = await axios.get("http://localhost:5000/api/teams");
+=======
+      const res = await axios.get(`${API_URL}/api/teams`);
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       console.log("Logged User:", loggedInUser);
 console.log("All Teams:", res.data);
 
@@ -56,6 +64,7 @@ res.data.forEach((team) => {
   };
 
   const handleApprove = async (teamId, userId) => {
+<<<<<<< HEAD
     try {
       await axios.put(`http://localhost:5000/api/teams/approve/${teamId}`, {
         userId,
@@ -137,6 +146,59 @@ res.data.forEach((team) => {
       navigate(`/profile/${userId}`);
     }
   };
+=======
+    await axios.put(`${API_URL}/api/teams/approve/${teamId}`, { userId });
+    fetchTeams();
+  };
+
+  const handleReject = async (teamId, userId) => {
+    await axios.put(`${API_URL}/api/teams/reject/${teamId}`, { userId });
+    fetchTeams();
+  };
+
+  const handleTransferLeader = async (teamId, newLeaderId) => {
+    await axios.put(`${API_URL}/api/teams/transfer-leader/${teamId}`, {
+      newLeaderId,
+    });
+    alert("Team Leader Updated");
+    fetchTeams();
+  };
+
+  const handleDeleteTeam = async (teamId) => {
+  try {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this team?"
+    );
+
+    if (!confirmDelete) return;
+
+    await axios.delete(
+      `${API_URL}/api/teams/delete/${teamId}`,
+      {
+        data: {
+          userId: loggedInUser._id,
+        },
+      }
+    );
+
+    alert("Team deleted successfully");
+
+    fetchTeams();
+
+  } catch (error) {
+    console.log(error);
+
+    alert(
+      error.response?.data?.message ||
+      "Unable to delete team"
+    );
+  }
+};
+
+const handleViewProfile = (userId) => {
+  navigate(`/profile/${userId}`);
+};
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 
   return (
     <DashboardLayout>
@@ -212,6 +274,7 @@ team.teamLeader?._id?.toString()
                     </p>
                   </div>
 
+<<<<<<< HEAD
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleViewProfile(member._id)}
@@ -234,6 +297,21 @@ team.teamLeader?._id?.toString()
                         </button>
                       )}
                   </div>
+=======
+                  {team.teamLeader?._id?.toString() ===
+loggedInUser?._id?.toString() &&
+                    member._id?.toString() !==
+loggedInUser?._id?.toString() && (
+                      <button
+                        onClick={() =>
+                          handleTransferLeader(team._id, member._id)
+                        }
+                        className="bg-indigo-600 text-white px-3 py-2 rounded-xl"
+                      >
+                        Make Leader
+                      </button>
+                    )}
+>>>>>>> 90fb055 (Prepare frontend for deployment)
                 </div>
               ))}
             </div>
@@ -275,10 +353,18 @@ team.teamLeader?._id?.toString()
   </div>
 )}
 
+<<<<<<< HEAD
 <div className="flex gap-3 mt-6">
   <button
     onClick={() => navigate(`/workspace/${team._id}`)}
     className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition text-center"
+=======
+<div className="grid grid-cols-3 gap-3 mt-6">
+
+  <button
+    onClick={() => navigate(`/workspace/${team._id}`)}
+    className="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl"
+>>>>>>> 90fb055 (Prepare frontend for deployment)
   >
     Workspace
   </button>
@@ -287,19 +373,31 @@ team.teamLeader?._id?.toString()
     <>
       <button
         onClick={() => navigate(`/edit-team/${team._id}`)}
+<<<<<<< HEAD
         className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 rounded-xl transition text-center"
+=======
+        className="bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-xl"
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       >
         Edit
       </button>
 
       <button
         onClick={() => handleDeleteTeam(team._id)}
+<<<<<<< HEAD
         className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-xl transition text-center"
+=======
+        className="bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl"
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       >
         Delete
       </button>
     </>
   )}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 </div>
           </div>
         ))}
@@ -329,6 +427,7 @@ team.teamLeader?._id?.toString()
         selectedTeam.joinRequests.map((req) => (
           <div
             key={req.user?._id}
+<<<<<<< HEAD
             className="border border-slate-200 rounded-2xl p-5 mb-4 bg-slate-50 hover:bg-white transition"
           >
             <div className="flex justify-between items-start">
@@ -367,15 +466,50 @@ team.teamLeader?._id?.toString()
                 >
                   View Profile
                 </button>
+=======
+            className="border rounded-xl p-5 mb-4"
+          >
+            <div className="flex justify-between">
+
+              <div>
+                <h3 className="font-bold text-lg">
+                  {req.user?.fullName}
+                </h3>
+
+                <p className="text-slate-500">
+                  {req.user?.email}
+                </p>
+
+                <p className="mt-2 text-green-600 font-medium">
+                  Match Score : {req.matchPercentage}%
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2">
+
+                <button
+  onClick={() => handleViewProfile(req.user._id)}
+  className="border px-4 py-2 rounded-xl hover:bg-slate-100"
+>
+  View Profile
+</button>
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 
                 <button
                   onClick={() =>
                     handleApprove(
                       selectedTeam._id,
+<<<<<<< HEAD
                       req.user?._id
                     )
                   }
                   className="bg-green-600 hover:bg-green-700 text-white text-xs px-4 py-2 rounded-xl font-medium shadow-sm"
+=======
+                      req.user._id
+                    )
+                  }
+                  className="bg-green-600 text-white px-4 py-2 rounded-xl"
+>>>>>>> 90fb055 (Prepare frontend for deployment)
                 >
                   Approve
                 </button>
@@ -384,6 +518,7 @@ team.teamLeader?._id?.toString()
                   onClick={() =>
                     handleReject(
                       selectedTeam._id,
+<<<<<<< HEAD
                       req.user?._id
                     )
                   }
@@ -392,6 +527,18 @@ team.teamLeader?._id?.toString()
                   Reject
                 </button>
               </div>
+=======
+                      req.user._id
+                    )
+                  }
+                  className="bg-red-600 text-white px-4 py-2 rounded-xl"
+                >
+                  Reject
+                </button>
+
+              </div>
+
+>>>>>>> 90fb055 (Prepare frontend for deployment)
             </div>
           </div>
         ))

@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+<<<<<<< HEAD
+=======
+import API_URL from "../api";
+>>>>>>> 90fb055 (Prepare frontend for deployment)
 import DashboardLayout from "../layouts/DashboardLayout";
 import {
   FiAward,
@@ -21,7 +25,11 @@ function Hackathons() {
   const fetchHackathons = async () => {
     try {
       const res = await axios.get(
+<<<<<<< HEAD
         "http://localhost:5000/api/hackathons/all"
+=======
+        `${API_URL}/api/hackathons/all`
+>>>>>>> 90fb055 (Prepare frontend for deployment)
       );
       setHackathons(res.data);
     } catch (error) {
