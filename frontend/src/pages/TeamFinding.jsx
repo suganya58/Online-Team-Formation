@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../api";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { FiSearch, FiUsers, FiCpu, FiCheckCircle, FiAlertCircle, FiAward, FiGlobe } from "react-icons/fi";
 
@@ -25,10 +25,10 @@ function TeamFinding() {
     setError("");
 
     try {
-      let url = "http://localhost:5000/api/teams";
+      let url = `${API_URL}/api/teams`;
 
       if (activeTab === "recommended" && loggedInUser && loggedInUser._id) {
-        url = `http://localhost:5000/api/teams/recommendations/${loggedInUser._id}`;
+        url = `${API_URL}/api/teams/recommendations/${loggedInUser._id}`;
       }
 
       const res = await axios.get(url);
@@ -50,9 +50,9 @@ function TeamFinding() {
         return;
       }
 
-      // Sends ONLY userId to backend API
+      // Sends userId to backend API
       const res = await axios.put(
-        `http://localhost:5000/api/teams/join/${teamId}`,
+        `${API_URL}/api/teams/join/${teamId}`,
         {
           userId: user._id,
         }
@@ -65,97 +65,6 @@ function TeamFinding() {
       alert(err.response?.data?.message || "Failed to send join request.");
     }
   };
-=======
-import axios from "axios";
-import API_URL from "../api";
-import DashboardLayout from "../layouts/DashboardLayout";
-import { FiSearch, FiUsers } from "react-icons/fi";
-
-function TeamFinding() {
-  const [teams, setTeams] = useState([]);
-  const [search, setSearch] = useState("");
-
-  const loggedInUser =
-    JSON.parse(localStorage.getItem("user")) || {};
-
-  useEffect(() => {
-    fetchTeams();
-  }, []);
-
-  const fetchTeams = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/api/teams`);
-      setTeams(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const calculateMatch = (teamSkills = [], userSkills = []) => {
-    if (!teamSkills.length) return 0;
-
-    const matchedSkills = teamSkills.filter((skill) =>
-      userSkills.includes(skill)
-    );
-
-    return Math.round(
-      (matchedSkills.length / teamSkills.length) * 100
-    );
-  };
-
-  const getBestTeams = (teams, userSkills = []) => {
-    return teams
-      .map((team) => ({
-        ...team,
-        matchScore: calculateMatch(
-          team.requiredSkills || [],
-          userSkills
-        ),
-      }))
-      .sort((a, b) => b.matchScore - a.matchScore);
-  };
-
-  const getRecommendation = (teamSkills = [], userSkills = []) => {
-    const matchedSkills = teamSkills.filter((skill) =>
-      userSkills.includes(skill)
-    );
-
-    const missingSkills = teamSkills.filter(
-      (skill) => !userSkills.includes(skill)
-    );
-
-    if (matchedSkills.length === teamSkills.length && teamSkills.length > 0) {
-      return `Perfect match for ${matchedSkills.join(", ")}`;
-    }
-
-    if (matchedSkills.length > 0) {
-      return `Good fit. Missing: ${missingSkills.join(", ")}`;
-    }
-
-    return "Low match";
-  };
-
-const handleJoin = async (teamId, matchPercentage) => {
-  try {
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    await axios.put(
-      `${API_URL}/api/teams/join/${teamId}`,
-      {
-        userId: user._id,
-        matchPercentage,
-      }
-    );
-
-    alert("Join request sent successfully");
-    fetchTeams();
-
-  } catch (error) {
-    console.log(error.response?.data);
-    alert(error.response?.data?.message || "Join failed");
-  }
-};
->>>>>>> 90fb055 (Prepare frontend for deployment)
 
   const filteredTeams = teams.filter((team) =>
     team.teamName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -167,7 +76,6 @@ const handleJoin = async (teamId, matchPercentage) => {
 
   return (
     <DashboardLayout>
-<<<<<<< HEAD
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
@@ -230,18 +138,6 @@ const handleJoin = async (teamId, matchPercentage) => {
       )}
 
       {/* Search Bar */}
-=======
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-slate-900">
-          Find Teams
-        </h1>
-
-        <p className="text-slate-500 mt-2">
-          Join teams that are actively recruiting members.
-        </p>
-      </div>
-
->>>>>>> 90fb055 (Prepare frontend for deployment)
       <div className="relative max-w-xl mb-8">
         <FiSearch
           className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
@@ -250,7 +146,6 @@ const handleJoin = async (teamId, matchPercentage) => {
 
         <input
           type="text"
-<<<<<<< HEAD
           placeholder="Search by skill, team name, or hackathon..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -455,110 +350,6 @@ const handleJoin = async (teamId, matchPercentage) => {
           })}
         </div>
       )}
-=======
-          placeholder="Search by skill or hackathon..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-white border border-slate-200 rounded-2xl pl-12 py-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {teams.length === 0 && (
-        <p className="text-slate-500 mb-4">No teams available</p>
-      )}
-
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {getBestTeams(
-          filteredTeams,
-          loggedInUser.skills || []
-        ).map((team, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition"
-          >
-            {index === 0 && (
-              <p className="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full inline-block mb-3">
-                ⭐ Best Match
-              </p>
-            )}
-
-            <div className="flex justify-between items-start">
-              <h2 className="text-2xl font-bold text-slate-900">
-                {team.teamName}
-              </h2>
-
-              <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
-                Recruiting
-              </span>
-            </div>
-
-            <p className="text-indigo-600 font-medium mt-2">
-              🏆 {team.hackathonName}
-            </p>
-
-            <p className="text-sm text-slate-500 mt-1">
-              {getRecommendation(
-                team.requiredSkills || [],
-                loggedInUser.skills || []
-              )}
-            </p>
-
-            <p className="text-green-600 font-semibold mt-2">
-              Match: {team.matchScore}%
-            </p>
-
-            <p className="text-slate-500 text-sm mt-4 leading-6">
-              {team.description}
-            </p>
-
-            <div className="mt-5">
-              <p className="text-sm text-slate-500">Team Lead</p>
-              <p className="font-semibold text-slate-900">
-  {team.teamLeader?.fullName}
-</p>
-            </div>
-
-            <div className="mt-4 flex items-center gap-2">
-              <FiUsers className="text-indigo-600" />
-              <span className="font-medium">
-                {team.members?.length || 0}/{team.maxMembers} Members
-              </span>
-            </div>
-
-            <div className="mt-2">
-              <span className="text-green-600 text-sm font-medium">
-                {team.maxMembers - (team.members?.length || 0)} Slots Available
-              </span>
-            </div>
-
-            <div className="mt-5">
-              <p className="text-sm text-slate-500 mb-3">
-                Required Skills
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                {team.requiredSkills?.map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full text-xs font-medium"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <button
-              disabled={team.members?.includes(loggedInUser.fullName)}
-              onClick={() => handleJoin(team._id)}
-              className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-2xl font-medium transition"
-            >
-              Request to Join
-            </button>
-          </div>
-        ))}
-      </div>
->>>>>>> 90fb055 (Prepare frontend for deployment)
     </DashboardLayout>
   );
 }

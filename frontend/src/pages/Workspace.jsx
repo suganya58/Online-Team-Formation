@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../api";
 import DashboardLayout from "../layouts/DashboardLayout";
 import {
   FiUsers,
@@ -49,7 +50,7 @@ function Workspace() {
 
     try {
       // 1. Fetch team details
-      const teamRes = await axios.get("http://localhost:5000/api/teams");
+      const teamRes = await axios.get(`${API_URL}/api/teams`);
       const foundTeam = teamRes.data.find((t) => t._id === id);
 
       if (!foundTeam) {
@@ -91,7 +92,7 @@ function Workspace() {
     setTasksLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/tasks/team/${teamId}?userId=${loggedInUser._id}`
+        `${API_URL}/api/tasks/team/${teamId}?userId=${loggedInUser._id}`
       );
       setTasks(res.data);
     } catch (err) {
@@ -116,7 +117,7 @@ function Workspace() {
 
     setCreatingTask(true);
     try {
-      await axios.post("http://localhost:5000/api/tasks", {
+      await axios.post(`${API_URL}/api/tasks`, {
         title: taskForm.title,
         description: taskForm.description,
         assignedTo: taskForm.assignedTo,
@@ -145,7 +146,7 @@ function Workspace() {
 
   const handleUpdateTaskStatus = async (taskId, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.put(`${API_URL}/api/tasks/${taskId}`, {
         userId: loggedInUser._id,
         status: newStatus,
       });
@@ -162,7 +163,7 @@ function Workspace() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.delete(`${API_URL}/api/tasks/${taskId}`, {
         data: { userId: loggedInUser._id },
       });
 

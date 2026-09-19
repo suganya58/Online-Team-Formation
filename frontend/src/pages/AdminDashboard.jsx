@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-<<<<<<< HEAD
+import API_URL from "../api";
 import DashboardLayout from "../layouts/DashboardLayout";
 
 function AdminDashboard() {
@@ -28,7 +28,7 @@ function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/stats", {
+      const res = await axios.get(`${API_URL}/api/admin/stats`, {
         headers: { "x-user-id": user?._id },
       });
       setStats(res.data);
@@ -39,7 +39,7 @@ function AdminDashboard() {
 
   const fetchTopics = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/topics");
+      const res = await axios.get(`${API_URL}/api/topics`);
       setTopics(res.data);
     } catch (error) {
       console.log(error);
@@ -49,7 +49,7 @@ function AdminDashboard() {
   const addTopic = async () => {
     if (!newTopic) return;
     try {
-      await axios.post("http://localhost:5000/api/topics/add", { topic: newTopic });
+      await axios.post(`${API_URL}/api/topics/add`, { topic: newTopic });
       setNewTopic("");
       fetchTopics();
     } catch (error) {
@@ -59,7 +59,7 @@ function AdminDashboard() {
 
   const deleteTopic = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/topics/${id}`);
+      await axios.delete(`${API_URL}/api/topics/${id}`);
       fetchTopics();
     } catch (error) {
       console.log(error);
@@ -68,7 +68,7 @@ function AdminDashboard() {
 
   const fetchAnnouncements = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/announcements");
+      const res = await axios.get(`${API_URL}/api/announcements`);
       setAnnouncements(res.data);
     } catch (error) {
       console.log(error);
@@ -78,7 +78,7 @@ function AdminDashboard() {
   const addAnnouncement = async () => {
     if (!newAnnouncement) return;
     try {
-      await axios.post("http://localhost:5000/api/announcements/add", { message: newAnnouncement });
+      await axios.post(`${API_URL}/api/announcements/add`, { message: newAnnouncement });
       setNewAnnouncement("");
       fetchAnnouncements();
     } catch (error) {
@@ -88,7 +88,7 @@ function AdminDashboard() {
 
   const deleteAnnouncement = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/announcements/${id}`);
+      await axios.delete(`${API_URL}/api/announcements/${id}`);
       fetchAnnouncements();
     } catch (error) {
       console.log(error);
@@ -220,262 +220,9 @@ function AdminDashboard() {
             </div>
           ))}
         </div>
-=======
-import API_URL from "../api";
-import DashboardLayout from "../layouts/DashboardLayout";
-
-function AdminDashboard() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const [stats, setStats] = useState({
-  totalUsers: 0,
-  totalTeams: 0,
-  totalHackathons: 0,
-  activeTeams: 0,
-});
-const [topics, setTopics] = useState([]);
-const [announcements, setAnnouncements] = useState([]);
-const [newAnnouncement, setNewAnnouncement] = useState("");
-const [newTopic, setNewTopic] = useState("");
-
-useEffect(() => {
-  fetchStats();
-  fetchTopics();
-  fetchAnnouncements();
-
-}, []);
-
-const fetchStats = async () => {
-  try {
-    const res = await axios.get(
-      `${API_URL}/api/admin/stats`
-    );
-
-    setStats(res.data);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const fetchTopics = async () => {
-  try {
-    const res = await axios.get(
-      `${API_URL}/api/topics`
-    );
-
-    setTopics(res.data);
-  } catch (error) {
-    console.log(error);
-  }
-};
-const addTopic = async () => {
-  if (!newTopic) return;
-
-  try {
-    await axios.post(
-      `${API_URL}/api/topics/add`,
-      { topic: newTopic }
-    );
-
-    setNewTopic("");
-    fetchTopics();
-  } catch (error) {
-    console.log(error);
-  }
-};
-const deleteTopic = async (id) => {
-  try {
-    await axios.delete(
-      `${API_URL}/api/topics/${id}`
-    );
-
-    fetchTopics();
-  } catch (error) {
-    console.log(error);
-  }
-};
-const fetchAnnouncements = async () => {
-  try {
-    const res = await axios.get(
-      `${API_URL}/api/announcements`
-    );
-
-    setAnnouncements(res.data);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const addAnnouncement = async () => {
-  if (!newAnnouncement) return;
-
-  try {
-    await axios.post(
-      `${API_URL}/api/announcements/add`,
-      { message: newAnnouncement }
-    );
-
-    setNewAnnouncement("");
-    fetchAnnouncements();
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const deleteAnnouncement = async (id) => {
-  try {
-    await axios.delete(
-      `${API_URL}/api/announcements/${id}`
-    );
-
-    fetchAnnouncements();
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-if (user?.email !== "suganya@gmail.com") {
-  return (
-    <DashboardLayout>
-      <div className="flex justify-center items-center h-[80vh]">
-        <h1 className="text-4xl font-bold text-red-500">
-          Access Denied
-        </h1>
->>>>>>> 90fb055 (Prepare frontend for deployment)
       </div>
     </DashboardLayout>
   );
 }
 
-<<<<<<< HEAD
-=======
-
-  return (
-   <DashboardLayout>
-  <div className="mb-8">
-    <h1 className="text-4xl font-bold text-slate-900">
-      Admin Dashboard
-    </h1>
-
-    <p className="text-slate-500 mt-2">
-      Manage HackMate platform activities.
-    </p>
-  </div>
-
-  {/* Analytics Cards */}
-  <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-    <div className="bg-white rounded-3xl p-6 shadow-sm border">
-      <h3 className="text-slate-500">Total Users</h3>
-      <p className="text-3xl font-bold mt-3">{stats.totalUsers}</p>
-    </div>
-
-    <div className="bg-white rounded-3xl p-6 shadow-sm border">
-      <h3 className="text-slate-500">Total Teams</h3>
-      <p className="text-3xl font-bold mt-3">{stats.totalTeams}</p>
-    </div>
-
-    <div className="bg-white rounded-3xl p-6 shadow-sm border">
-      <h3 className="text-slate-500">Hackathons</h3>
-      <p className="text-3xl font-bold mt-3">{stats.totalHackathons}</p>
-    </div>
-
-    <div className="bg-white rounded-3xl p-6 shadow-sm border">
-      <h3 className="text-slate-500">Active Teams</h3>
-      <p className="text-3xl font-bold mt-3">{stats.activeTeams}</p>
-    </div>
-  </div>
-
-  {/* Trending Topics */}
-  <div className="mt-10 bg-white rounded-3xl p-6 shadow-sm border">
-    <h2 className="text-2xl font-bold mb-6">
-      Trending Topics
-    </h2>
-
-    <div className="flex gap-3 mb-6">
-      <input
-        type="text"
-        placeholder="Enter trending topic..."
-        value={newTopic}
-        onChange={(e) => setNewTopic(e.target.value)}
-        className="flex-1 px-4 py-3 border rounded-2xl"
-      />
-
-      <button
-        onClick={addTopic}
-        className="bg-indigo-600 text-white px-6 py-3 rounded-2xl"
-      >
-        Add
-      </button>
-    </div>
-
-    <div className="space-y-3">
-      {topics.map((topic) => (
-        <div
-          key={topic._id}
-          className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl"
-        >
-          <span className="font-medium">
-            🔥 {topic.topic}
-          </span>
-
-          <button
-            onClick={() => deleteTopic(topic._id)}
-            className="bg-red-500 text-white px-4 py-2 rounded-xl"
-          >
-            Delete
-          </button>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  {/* Announcements */}
-  <div className="mt-10 bg-white rounded-3xl p-6 shadow-sm border">
-    <h2 className="text-2xl font-bold mb-6">
-      📢 Announcements
-    </h2>
-
-    <div className="flex gap-3 mb-6">
-      <input
-        type="text"
-        placeholder="Enter announcement..."
-        value={newAnnouncement}
-        onChange={(e) => setNewAnnouncement(e.target.value)}
-        className="flex-1 px-4 py-3 border rounded-2xl"
-      />
-
-      <button
-        onClick={addAnnouncement}
-        className="bg-indigo-600 text-white px-6 py-3 rounded-2xl"
-      >
-        Add
-      </button>
-    </div>
-
-    <div className="space-y-3">
-      {announcements.map((announcement) => (
-        <div
-          key={announcement._id}
-          className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl"
-        >
-          <span className="font-medium">
-            📢 {announcement.message}
-          </span>
-
-          <button
-            onClick={() =>
-              deleteAnnouncement(announcement._id)
-            }
-            className="bg-red-500 text-white px-4 py-2 rounded-xl"
-          >
-            Delete
-          </button>
-        </div>
-      ))}
-    </div>
-  </div>
-</DashboardLayout>
-  );
-}
-
->>>>>>> 90fb055 (Prepare frontend for deployment)
 export default AdminDashboard;

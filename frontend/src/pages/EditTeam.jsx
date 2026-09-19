@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-<<<<<<< HEAD
-=======
 import API_URL from "../api";
->>>>>>> 90fb055 (Prepare frontend for deployment)
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
-
 
 function EditTeam() {
     const { id } = useParams();
@@ -20,7 +16,6 @@ function EditTeam() {
     status: "Recruiting",
   });
 
-<<<<<<< HEAD
   const [currentMemberCount, setCurrentMemberCount] = useState(1);
   const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
@@ -30,7 +25,7 @@ function EditTeam() {
 
   const fetchTeam = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/teams");
+      const res = await axios.get(`${API_URL}/api/teams`);
 
       const team = res.data.find((t) => t._id === id);
 
@@ -63,36 +58,6 @@ function EditTeam() {
       console.log(err);
     }
   };
-=======
-  useEffect(() => {
-  fetchTeam();
-}, []);
-
-const fetchTeam = async () => {
-  try {
-    const res = await axios.get(`${API_URL}/api/teams`);
-
-    const team = res.data.find((t) => t._id === id);
-
-    if (!team) {
-      alert("Team not found");
-      return;
-    }
-
-    setFormData({
-      teamName: team.teamName,
-      hackathon: team.hackathonName,
-      projectIdea: team.description,
-      skills: team.requiredSkills.join(", "),
-      maxMembers: team.maxMembers,
-      status: team.status,
-    });
-
-  } catch (err) {
-    console.log(err);
-  }
-};
->>>>>>> 90fb055 (Prepare frontend for deployment)
 
   const handleChange = (e) => {
     setFormData({
@@ -101,7 +66,6 @@ const fetchTeam = async () => {
     });
   };
 
-<<<<<<< HEAD
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -125,7 +89,7 @@ const fetchTeam = async () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/teams/edit/${id}`,
+        `${API_URL}/api/teams/edit/${id}`,
         {
           userId: loggedInUser._id,
           teamName: formData.teamName,
@@ -150,43 +114,6 @@ const fetchTeam = async () => {
       );
     }
   };
-=======
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const loggedInUser = JSON.parse(localStorage.getItem("user"));
-
-  try {
-
-    await axios.put(
-      `${API_URL}/api/teams/edit/${id}`,
-      {
-        userId: loggedInUser._id,
-        teamName: formData.teamName,
-        hackathonName: formData.hackathon,
-        description: formData.projectIdea,
-        requiredSkills: formData.skills
-          .split(",")
-          .map((skill) => skill.trim()),
-        maxMembers: Number(formData.maxMembers),
-        status: formData.status,
-      }
-    );
-
-    alert("Team Updated Successfully!");
-
-    navigate("/my-teams");
-
-  } catch (error) {
-    console.log(error);
-
-    alert(
-      error.response?.data?.message ||
-      "Unable to update team"
-    );
-  }
-};
->>>>>>> 90fb055 (Prepare frontend for deployment)
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto">
